@@ -2,20 +2,27 @@ import cvxpy as cp
 import numpy as np
 import pandas as pd
 
+
+def read_data(file, className):
+    data = pd.read_csv(file)
+    for column in data:
+        if column != className:
+            data[column] = (data[column] - data[column].min()) / (data[column].max() - data[column].min())
+
+    return data, data.shape[0]
+
+
 C = 15
 
-# data = pd.read_csv('datasets/breastCancer.csv')
-# n = data.shape[0]
-# y = data.loc[:, (data.columns != 'diagnosis') & (data.columns != 'id')].to_numpy()
-# z = data.loc[:, 'diagnosis'].replace('B', -1).replace('M', 1).to_numpy()
+# className = 'diagnosis'
+# data, n = read_data('datasets/breastCancer.csv', className)
+# y = data.loc[:, (data.columns != className) & (data.columns != 'id')].to_numpy()
+# z = data.loc[:, className].replace('B', -1).replace('M', 1).to_numpy()
 
-data = pd.read_csv('datasets/diabetes.csv')
-n = data.shape[0]
-y = data.loc[:, data.columns != 'Outcome'].to_numpy()
-z = data.loc[:, 'Outcome'].replace(0, -1).to_numpy()
-
-# z = 2 * np.random.randint(2, size=n) - 1
-# y = np.random.rand(n, n) * 100000
+className = 'Outcome'
+data, n = read_data('datasets/diabetes.csv', className)
+y = data.loc[:, data.columns != className].to_numpy()
+z = data.loc[:, className].replace(0, -1).to_numpy()
 
 Q = np.zeros((n, n))
 for i in range(n):
@@ -24,7 +31,6 @@ for i in range(n):
 
 e = np.ones(n)
 
-# Define and solve the CVXPY problem.
 alpha = cp.Variable(n)
 prob = cp.Problem(
     cp.Minimize(0.5 * cp.quad_form(alpha, Q) - e.T @ alpha), [alpha >= 0, alpha <= C]
