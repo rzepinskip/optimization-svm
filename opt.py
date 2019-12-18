@@ -1,7 +1,6 @@
-import cvxpy as cp
 import numpy as np
 import pandas as pd
-
+from optsvm.svm import SVM
 
 className = "Outcome"
 
@@ -32,32 +31,9 @@ n = y.shape[0]
 X = y
 y = z
 
-C = 10
-m, n = X.shape
-y = y.reshape(-1, 1) * 1.0
-X_dash = y * X
-H = np.dot(X_dash, X_dash.T) * 1.0
+svm = SVM(C=10)
 
-# Converting into cvxopt format - as previously
-P = H
-q = -np.ones((m, 1))
-G = np.vstack((np.eye(m) * -1, np.eye(m)))
-h = np.hstack((np.zeros(m), np.ones(m) * C))
-A = y.reshape(1, -1)
-b = np.zeros(1)
-
-alpha = cp.Variable(m)
-prob = cp.Problem(
-    cp.Minimize(0.5 * cp.quad_form(alpha, P) + q.T @ alpha),
-    [G @ alpha <= h, A @ alpha == b],
-)
-prob.solve()
-
-alphas = alpha.value.reshape(-1, 1)
-
-w = ((y * alphas).T @ X).reshape(-1, 1)
-S = (alphas > 1e-4).flatten()
-b = y[S] - np.dot(X[S], w)
+w, b = svm.fit(X, y)
 
 # Display results
 print("---Our results")
