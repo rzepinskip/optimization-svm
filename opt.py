@@ -1,28 +1,51 @@
-import cvxpy as cp
 import numpy as np
+import pandas as pd
+from optsvm.svm import SVM
 
-n = 10
-C = 15
+className = "Outcome"
 
-z = 2 * np.random.randint(2, size=n) - 1
-y = np.random.randn(n, n)
-Q = np.zeros((n, n))
-for i in range(n):
-    for j in range(n):
-        Q[i, j] = z[i] * z[j] * y[i].T @ y[j]
 
-e = np.ones(n)
+def read_data(file):
+    data = pd.read_csv(file)
+    for column in data:
+        if column != className:
+            data[column] = (data[column] - data[column].min()) / (
+                data[column].max() - data[column].min()
+            )
 
-# Define and solve the CVXPY problem.
-alpha = cp.Variable(n)
-prob = cp.Problem(
-    cp.Minimize(0.5 * cp.quad_form(alpha, Q) - e.T @ alpha), [alpha >= 0, alpha <= C]
-)
-prob.solve()
+    return data
 
-# Print result.
-print("\nThe optimal value is", prob.value)
-print("A solution x is")
-print(alpha.value)
-print("A dual solution is")
-print(prob.constraints[0].dual_value)
+
+def get_vars_and_classes(data):
+    y = data.loc[:, data.columns != className].to_numpy()
+    z = data.loc[:, className].replace(0, -1).to_numpy()
+    return y, z
+
+
+data = read_data("datasets/diabetes.csv")
+msk = np.random.rand(len(data)) < 0.8
+y, z = get_vars_and_classes(data[msk])
+y_test, z_test = get_vars_and_classes(data[~msk])
+n = y.shape[0]
+
+X = y
+y = z
+
+svm = SVM(C=10)
+
+w, b = svm.fit(X, y)
+
+# Display results
+print("---Our results")
+print("w = ", w.flatten())
+print("b = ", b[0])
+
+from sklearn.svm import SVC
+
+clf = SVC(C=10, kernel="linear")
+clf.fit(X, y.ravel())
+
+print("---SVM library")
+print("w = ", clf.coef_)
+print("b = ", clf.intercept_)
+
