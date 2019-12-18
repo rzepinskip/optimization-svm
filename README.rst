@@ -21,4 +21,4 @@ Licence
 Authors
 -------
 
-`optsvm` was written by `Zuzanna Magierska, Paweł Rzepiński <louis@kragniz.eu>`_.
+`optsvm` was written by `Zuzanna Magierska, Paweł Rzepiński`.
