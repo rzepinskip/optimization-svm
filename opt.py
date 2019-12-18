@@ -32,27 +32,28 @@ n = y.shape[0]
 X = y
 y = z
 
-# Importing with custom names to avoid issues with numpy / sympy matrix
-from cvxopt import matrix as cvxopt_matrix
-from cvxopt import solvers as cvxopt_solvers
-
 C = 10
 m, n = X.shape
 y = y.reshape(-1, 1) * 1.0
 X_dash = y * X
 H = np.dot(X_dash, X_dash.T) * 1.0
 
-# Converting into cvxopt format
-P = cvxopt_matrix(H)
-q = cvxopt_matrix(-np.ones((m, 1)))
-G = cvxopt_matrix(np.vstack((np.eye(m) * -1, np.eye(m))))
-h = cvxopt_matrix(np.hstack((np.zeros(m), np.ones(m) * C)))
-A = cvxopt_matrix(y.reshape(1, -1))
-b = cvxopt_matrix(np.zeros(1))
+# Converting into cvxopt format - as previously
+P = H
+q = -np.ones((m, 1))
+G = np.vstack((np.eye(m) * -1, np.eye(m)))
+h = np.hstack((np.zeros(m), np.ones(m) * C))
+A = y.reshape(1, -1)
+b = np.zeros(1)
 
-# Run solver
-sol = cvxopt_solvers.qp(P, q, G, h, A, b)
-alphas = np.array(sol["x"])
+alpha = cp.Variable(m)
+prob = cp.Problem(
+    cp.Minimize(0.5 * cp.quad_form(alpha, P) + q.T @ alpha),
+    [G @ alpha <= h, A @ alpha == b],
+)
+prob.solve()
+
+alphas = alpha.value.reshape(-1, 1)
 
 w = ((y * alphas).T @ X).reshape(-1, 1)
 S = (alphas > 1e-4).flatten()
