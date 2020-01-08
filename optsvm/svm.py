@@ -2,6 +2,15 @@ import numpy as np
 import cvxpy as cp
 
 
+def b_average(w, sv, sv_y):
+    return np.sum(sv_y - np.dot(sv, w)) / len(sv)
+
+
+def b_nearest_sv(w, sv, sv_y):
+    dots = np.dot(sv, w)
+    return -1 * (max(dots[sv_y == -1]) + min(dots[sv_y == 1])) / 2
+
+
 class SVM:
     def __init__(self, C=10):
         self._C = C
@@ -30,10 +39,14 @@ class SVM:
         prob.solve()
 
         alphas = alpha.value.reshape(-1, 1)
+        applicable_lagrangian = (self._C > alphas).flatten() & (alphas > 1e-4).flatten()
 
         w = ((y * alphas).T @ X).reshape(-1, 1)
-        S = (alphas > 1e-4).flatten()
-        b = y[S] - np.dot(X[S], w)
+
+        support_vectors = X[applicable_lagrangian]
+        support_vectors_y = y[applicable_lagrangian]
+
+        b = b_nearest_sv(w, support_vectors, support_vectors_y)
         self._w = w
         self._b = b
 
@@ -41,6 +54,5 @@ class SVM:
 
     def predict(self, X):
         # sign( x·w+b )
-        # TODO check b[0] correctness
-        dot_result = np.sign(np.dot(np.array(X), self._w) + self._b[0])
+        dot_result = np.sign(np.dot(np.array(X), self._w) + self._b)
         return dot_result.astype(int).flatten()

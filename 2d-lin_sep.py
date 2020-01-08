@@ -64,7 +64,7 @@ w, b = svm.fit(X, y)
 # Display results
 print("---Our results")
 print("w = ", w.flatten())
-print("b = ", b[0])
+print("b = ", b)
 
 from sklearn.svm import SVC
 

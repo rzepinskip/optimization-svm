@@ -37,11 +37,11 @@ w, b = svm.fit(X, y)
 
 print("---Our results")
 print("w = ", w.flatten())
-print("b = ", b[0])
+print("b = ", b)
 
 from sklearn.svm import SVC
 
-clf = SVC(C=10, kernel="linear")
+clf = SVC(C=100, kernel="linear")
 clf.fit(X, y.ravel())
 
 print("---SVM library")

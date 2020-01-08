@@ -38,7 +38,7 @@ w, b = svm.fit(X, y)
 # Display results
 print("---Our results")
 print("w = ", w.flatten())
-print("b = ", b[0])
+print("b = ", b)
 
 from sklearn.svm import SVC
 
@@ -48,4 +48,3 @@ clf.fit(X, y.ravel())
 print("---SVM library")
 print("w = ", clf.coef_)
 print("b = ", clf.intercept_)
-
