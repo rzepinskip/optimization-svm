@@ -7,6 +7,8 @@ class SVM:
         self._C = C
 
     def fit(self, X, y):
+        X = np.array(X)
+        y = np.array(y)
         C = self._C
         m, n = X.shape
         y = y.reshape(-1, 1) * 1.0
@@ -32,12 +34,13 @@ class SVM:
         w = ((y * alphas).T @ X).reshape(-1, 1)
         S = (alphas > 1e-4).flatten()
         b = y[S] - np.dot(X[S], w)
-
         self._w = w
         self._b = b
 
         return w, b
 
     def predict(self, X):
-        # TODO
-        return np.zeros(X.shape)
+        # sign( x·w+b )
+        # TODO check b[0] correctness
+        dot_result = np.sign(np.dot(np.array(X), self._w) + self._b[0])
+        return dot_result.astype(int).flatten()

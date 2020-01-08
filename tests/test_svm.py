@@ -9,8 +9,12 @@ def test_linear_separable():
     svm = SVM(C=10)
 
     w, b = svm.fit(X, y)
-    np.testing.assert_allclose(w, np.array([[0.25], [-0.25]]))
-    np.testing.assert_allclose(b[0], np.array([-0.75]))
+    assert np.allclose(w, np.array([[0.25], [-0.25]]))
+    assert np.allclose(b[0], np.array([-0.75]))
+
+    X_test = [[2, 4], [6, -2]]
+    y_test = [-1, 1]
+    assert np.array_equal(svm.predict(X_test), y_test)
 
 
 def test_not_linear_separable():
@@ -20,6 +24,10 @@ def test_not_linear_separable():
     svm = SVM(C=10)
 
     w, b = svm.fit(X, y)
-    np.testing.assert_allclose(w, np.array([[0.25], [-0.25]]))
-    np.testing.assert_allclose(b[0], np.array([-0.75]))
+    assert np.allclose(w, np.array([[0.25], [-0.25]]))
+    assert np.allclose(b[0], np.array([-0.75]))
+
+    X_test = [[2, 4], [6, -2]]
+    y_test = [-1, 1]
+    assert np.array_equal(svm.predict(X_test), y_test)
 
