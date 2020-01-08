@@ -23,17 +23,14 @@ plt.yticks(np.arange(-5, 5, step=1))
 plt.axvline(0, color="black", alpha=0.5)
 plt.axhline(0, color="black", alpha=0.5)
 
-
 plt.xlabel("$x_1$")
 plt.ylabel("$x_2$")
 
 plt.legend(loc="lower right")
 plt.show()
 
-# New dataset (for later)
-X = np.array([[3, 4], [1, 4], [2, 3], [6, -1], [7, -1], [5, -3], [2, 4]])
-y = np.array([-1, -1, -1, 1, 1, 1, 1])
-
+X = np.vstack((x_pos, x_neg))
+y = np.concatenate((y_pos, y_neg))
 svm = SVM(C=10)
 
 w, b = svm.fit(X, y)

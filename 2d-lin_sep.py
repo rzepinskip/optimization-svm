@@ -10,8 +10,8 @@ x1 = np.linspace(-10, 10)
 x = np.vstack((np.linspace(-10, 10), np.linspace(-10, 10)))
 
 # Data for the next section
-X = np.vstack((x_pos, x_neg))
-y = np.concatenate((y_pos, y_neg))
+X = np.vstack((x_neg, x_pos))
+y = np.concatenate((y_neg, y_pos))
 
 # Plot
 fig = plt.figure(figsize=(10, 10))
