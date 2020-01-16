@@ -25,15 +25,15 @@ def b_nearest_sv(w, sv, sv_y):
 
 
 class SVM(BaseEstimator, ClassifierMixin):
-    def __init__(self, C=10):
+    def __init__(self, C=10, solver="OSQP"):
         self.C = C
+        self.solver = solver
 
     def _more_tags(self):
         return {"requires_fit": True, "binary_only": True}
 
     def fit(self, X, y):
         X, y = check_X_y(X, y)
-
         m, n = X.shape
         y = y.reshape(-1, 1) * 1.0
         X_dash = y * X
@@ -51,7 +51,7 @@ class SVM(BaseEstimator, ClassifierMixin):
             cp.Minimize(0.5 * cp.quad_form(alpha, P) + q.T @ alpha),
             [G @ alpha <= h, A @ alpha == b],
         )
-        prob.solve()
+        prob.solve(solver=self.solver)
 
         alphas = alpha.value.reshape(-1, 1)
         applicable_lagrangian = (self.C > alphas).flatten() & (alphas > 1e-4).flatten()
