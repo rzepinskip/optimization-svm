@@ -61,7 +61,7 @@ class SVM(BaseEstimator, ClassifierMixin):
         support_vectors = X[applicable_lagrangian]
         support_vectors_y = y[applicable_lagrangian]
 
-        b = b_nearest_sv(w, support_vectors, support_vectors_y)
+        b = b_average(w, support_vectors, support_vectors_y)
         self.w_ = w
         self.b_ = b
 
