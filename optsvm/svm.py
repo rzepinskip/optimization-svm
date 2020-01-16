@@ -15,7 +15,7 @@ class SVM:
     def __init__(self, C=10):
         self._C = C
 
-    def fit(self, X, y):
+    def fit(self, X, y, solver="OSQP"):
         X = np.array(X)
         y = np.array(y)
         C = self._C
@@ -36,7 +36,7 @@ class SVM:
             cp.Minimize(0.5 * cp.quad_form(alpha, P) + q.T @ alpha),
             [G @ alpha <= h, A @ alpha == b],
         )
-        prob.solve()
+        prob.solve(solver=solver)
 
         alphas = alpha.value.reshape(-1, 1)
         applicable_lagrangian = (self._C > alphas).flatten() & (alphas > 1e-4).flatten()
