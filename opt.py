@@ -53,17 +53,17 @@ for key, dataset in datasets.items():
     for solver in solvers:
         try:
             print("solver = ", solver)
-            svm = SVM(C=10)
+            svm = SVM(C=10, solver=solver)
 
             start_time = process_time()
-            w, b = svm.fit(X_train, y_train, solver)
+            svm.fit(X_train, y_train)
             y_pred = svm.predict(X_test)
             stop_time = process_time()
 
             # Display results
             print("---Our results")
-            print("w = ", w.flatten())
-            print("b = ", b)
+            print("w = ", svm.w_.flatten())
+            print("b = ", svm.b_)
             print("time = ", stop_time - start_time)
             print(classification_report(y_test, y_pred, labels=[-1, 1]))
         except MemoryError as error:

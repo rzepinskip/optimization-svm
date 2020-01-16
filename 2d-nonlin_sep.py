@@ -33,11 +33,11 @@ X = np.vstack((x_pos, x_neg))
 y = np.concatenate((y_pos, y_neg))
 svm = SVM(C=10)
 
-w, b = svm.fit(X, y)
+svm.fit(X, y)
 
 print("---Our results")
-print("w = ", w.flatten())
-print("b = ", b)
+print("w = ", svm.w_.flatten())
+print("b = ", svm.b_)
 
 from sklearn.svm import SVC
 
