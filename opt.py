@@ -9,18 +9,18 @@ datasets = {
     "diabetes": {
         "file": "diabetes.csv",
         "className": "Outcome",
-        "preprocess": preprocess_diabetes
+        "preprocess": preprocess_diabetes,
     },
     "adult": {
         "file": "adult.data",
         "className": "Outcome",
-        "preprocess": preprocess_adult
+        "preprocess": preprocess_adult,
     },
     "occupancy": {
         "file": "occupancy.txt",
         "className": "Occupancy",
-        "preprocess": preprocess_occupancy
-    }
+        "preprocess": preprocess_occupancy,
+    },
 }
 
 
@@ -34,6 +34,7 @@ def read_data(dataset):
             )
 
     return data
+
 
 def get_mask_data(X, y, msk):
     return X[msk].to_numpy(), y[msk].to_numpy()
@@ -52,14 +53,14 @@ n = X_train.shape[0]
 svm = SVM(C=10)
 
 start_time = process_time()
-w, b = svm.fit(X_train, y_train)
+svm.fit(X_train, y_train)
 y_pred = svm.predict(X_test)
 stop_time = process_time()
 
 # Display results
 print("---Our results")
-print("w = ", w.flatten())
-print("b = ", b)
+print("w = ", svm.w_.flatten())
+print("b = ", svm.b_)
 print("time = ", stop_time - start_time)
 print(classification_report(y_test, y_pred, labels=[-1, 1]))
 

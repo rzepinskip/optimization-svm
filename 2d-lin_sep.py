@@ -59,12 +59,12 @@ plt.show()
 
 svm = SVM(C=10)
 
-w, b = svm.fit(X, y)
+svm.fit(X, y)
 
 # Display results
 print("---Our results")
-print("w = ", w.flatten())
-print("b = ", b)
+print("w = ", svm.w_.flatten())
+print("b = ", svm.b_)
 
 from sklearn.svm import SVC
 
